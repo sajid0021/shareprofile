@@ -14,6 +14,7 @@ const profileSchema = new mongoose.Schema(
     email: { type: String, required: true, lowercase: true, trim: true },
     phone: { type: String, default: "", trim: true },
     website: { type: String, default: "", trim: true },
+    skills: { type: [String], default: [] },
     profileImage: { type: String, default: "", maxlength: 2800000 },
   },
   { timestamps: true },

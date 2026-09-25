@@ -28,6 +28,7 @@ export const profileSchema = z.object({
   website: z.string().url("Enter a valid URL").optional().or(z.literal("")),
 
   profileImage: z.string().optional().or(z.literal("")),
+  skills: z.array(z.string()).optional(),
 });
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;

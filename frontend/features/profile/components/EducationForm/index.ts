@@ -1,0 +1,1 @@
+export { EducationForm } from "./EducationForm";

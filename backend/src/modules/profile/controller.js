@@ -4,6 +4,7 @@ import {
   createProfileForUser,
   getProfileForUser,
   getPublicProfile,
+  saveProfileSkillsForUser,
   saveProfileImageForUser,
   saveProfileForUser,
 } from "./service.js";
@@ -19,6 +20,11 @@ const profileSchema = z.object({
   country: z.string().trim().min(2).max(100),
   phone: z.string().max(30).default(""),
   website: z.string().url().or(z.literal("")).default(""),
+  skills: z.array(z.string().trim().min(2).max(50)).max(50).default([]),
+});
+
+const skillsSchema = z.object({
+  skills: z.array(z.string().trim().min(2).max(50)).max(50),
 });
 
 const profileImageSchema = z.object({
@@ -68,6 +74,16 @@ export async function saveMyProfileImageController(req, res) {
     return res.status(200).json({ success: true, message: "Profile image updated.", profile });
   } catch (error) {
     return sendError(res, error, "Unable to save profile image.");
+  }
+}
+
+export async function saveMySkillsController(req, res) {
+  try {
+    const { skills } = skillsSchema.parse(req.body);
+    const profile = await saveProfileSkillsForUser(req.user.id, skills);
+    return res.status(200).json({ success: true, message: "Skills saved.", profile });
+  } catch (error) {
+    return sendError(res, error, "Unable to save skills.");
   }
 }
 

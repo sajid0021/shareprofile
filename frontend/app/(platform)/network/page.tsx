@@ -1,13 +1,5 @@
-export default function NetworkPage() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold text-[#1D2226]">
-        My Network
-      </h1>
+import { NetworkDashboard } from "@/features/network/components/NetworkDashboard";
 
-      <p className="mt-2 text-sm text-[#666666]">
-        Manage your professional network.
-      </p>
-    </main>
-  );
+export default function NetworkPage() {
+  return <NetworkDashboard />;
 }

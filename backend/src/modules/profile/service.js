@@ -18,6 +18,7 @@ function normalizeProfile(payload, userId) {
     email: payload.accountEmail.trim().toLowerCase(),
     phone: payload.phone?.trim() || "",
     website: payload.website?.trim() || "",
+    skills: payload.skills || [],
   };
 }
 
@@ -39,6 +40,7 @@ export async function createProfileForUser(userId, accountEmail, names) {
     state: "",
     country: "",
     email: accountEmail.trim().toLowerCase(),
+    skills: [],
   };
 
   if (canUseMongo()) {
@@ -77,7 +79,7 @@ export async function saveProfileForUser(userId, accountEmail, payload) {
 
   if (canUseMongo()) {
     const saved = await Profile.findOneAndUpdate({ userId }, profile, {
-      new: true,
+      returnDocument: "after",
       upsert: true,
       runValidators: true,
       setDefaultsOnInsert: true,
@@ -106,7 +108,7 @@ export async function saveProfileImageForUser(userId, profileImage) {
     const saved = await Profile.findOneAndUpdate(
       { userId },
       { $set: { profileImage } },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
     return withoutStorageFields(saved);
   }
@@ -117,6 +119,30 @@ export async function saveProfileImageForUser(userId, profileImage) {
   }
 
   profile.profileImage = profileImage;
+  developmentProfiles.set(userId, profile);
+  return withoutStorageFields(profile);
+}
+
+export async function saveProfileSkillsForUser(userId, skills) {
+  if (isMongoConfigured() && !canUseMongo()) {
+    throw new Error("MongoDB is configured but not connected.");
+  }
+
+  if (canUseMongo()) {
+    const saved = await Profile.findOneAndUpdate(
+      { userId },
+      { $set: { skills } },
+      { returnDocument: "after", runValidators: true },
+    );
+    return withoutStorageFields(saved);
+  }
+
+  const profile = developmentProfiles.get(userId);
+  if (!profile) {
+    throw new Error("Profile not found.");
+  }
+
+  profile.skills = skills;
   developmentProfiles.set(userId, profile);
   return withoutStorageFields(profile);
 }

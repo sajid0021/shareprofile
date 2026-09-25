@@ -7,6 +7,9 @@
     "doc": "docs"
   },
   "scripts": {
+    "backend:dev": "npm --prefix backend run dev",
+    "backend:start": "npm --prefix backend start",
+    "frontend:dev": "npm --prefix frontend run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

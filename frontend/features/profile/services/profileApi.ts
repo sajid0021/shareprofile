@@ -42,6 +42,15 @@ export async function saveMyProfileImage(profileImage: string): Promise<ProfileF
   }
 }
 
+export async function saveMySkills(skills: string[]): Promise<ProfileFormValues> {
+  try {
+    const response = await api.put("/profiles/me/skills", { skills });
+    return response.data.profile;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "Unable to save skills."));
+  }
+}
+
 export async function getPublicProfile(username: string): Promise<ProfileFormValues> {
   const response = await api.get(`/profiles/public/${encodeURIComponent(username)}`);
   return response.data.profile;
