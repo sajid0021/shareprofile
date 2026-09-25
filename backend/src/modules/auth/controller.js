@@ -16,6 +16,18 @@ const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
+function getSessionCookieOptions(req) {
+  const isHttpsRequest = req.secure || req.headers.origin?.startsWith("https://");
+
+  return {
+    httpOnly: true,
+    sameSite: isHttpsRequest ? "none" : "lax",
+    secure: isHttpsRequest,
+    path: "/",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  };
+}
+
 export async function registerController(req, res) {
   try {
     const payload = registerSchema.parse(req.body);
@@ -27,12 +39,7 @@ export async function registerController(req, res) {
       console.error("Welcome email failed:", mailError.message);
     }
 
-    res.cookie("token", result.token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    res.cookie("token", result.token, getSessionCookieOptions(req));
 
     return res.status(201).json({
       success: true,
@@ -54,12 +61,7 @@ export async function loginController(req, res) {
     const payload = loginSchema.parse(req.body);
     const result = await loginUser(payload);
 
-    res.cookie("token", result.token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    res.cookie("token", result.token, getSessionCookieOptions(req));
 
     return res.status(200).json({
       success: true,
@@ -93,7 +95,7 @@ export async function meController(req, res) {
 }
 
 export function logoutController(req, res) {
-  res.clearCookie("token");
+  res.clearCookie("token", getSessionCookieOptions(req));
 
   return res.status(200).json({
     success: true,

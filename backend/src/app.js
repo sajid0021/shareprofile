@@ -20,9 +20,23 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
+const allowedOrigins = [
+  ...(process.env.FRONTEND_URL || "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+  "https://shareprofile-seven.vercel.app",
+].filter((origin, index, origins) => origins.indexOf(origin) === index);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Origin is not allowed by CORS."));
+    },
     credentials: true,
   }),
 );
