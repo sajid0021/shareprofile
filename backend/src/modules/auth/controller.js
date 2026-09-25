@@ -48,8 +48,9 @@ export async function registerController(req, res) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to register user.";
+    const status = message.includes("storage") || message.includes("MongoDB") ? 503 : 400;
 
-    return res.status(400).json({
+    return res.status(status).json({
       success: false,
       message,
     });
@@ -70,8 +71,9 @@ export async function loginController(req, res) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to log in.";
+    const status = message.includes("storage") || message.includes("MongoDB") ? 503 : 401;
 
-    return res.status(401).json({
+    return res.status(status).json({
       success: false,
       message,
     });

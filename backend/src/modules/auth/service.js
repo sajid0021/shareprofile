@@ -7,6 +7,12 @@ import User from "./model.js";
 const devUsers = new Map();
 const JWT_SECRET = process.env.JWT_ACCESS_SECRET || "profile-share-dev-secret";
 
+function ensurePersistentAuthStore() {
+  if (process.env.NODE_ENV === "production" && !isMongoConfigured()) {
+    throw new Error("Persistent authentication storage is not configured.");
+  }
+}
+
 function buildUserRecord(user) {
   return {
     id: user.id,
@@ -33,6 +39,8 @@ export function createToken(user) {
 }
 
 export async function registerUser({ firstName, lastName, email, password }) {
+  ensurePersistentAuthStore();
+
   const normalizedEmail = email.trim().toLowerCase();
 
   if (!firstName.trim() || !lastName.trim()) {
@@ -85,6 +93,8 @@ export async function registerUser({ firstName, lastName, email, password }) {
 }
 
 export async function loginUser({ email, password }) {
+  ensurePersistentAuthStore();
+
   const normalizedEmail = email.trim().toLowerCase();
   const user = isMongoConfigured()
     ? isMongoReady()
