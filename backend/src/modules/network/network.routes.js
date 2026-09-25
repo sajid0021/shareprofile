@@ -8,6 +8,7 @@ import {
   acceptInvitationController,
   rejectInvitationController,
   getConnectionsController,
+  searchNetworkUsersController,
 } from "./network.controller.js";
 
 const router = Router();
@@ -23,5 +24,7 @@ router.patch("/invitations/:id/accept", authMiddleware, acceptInvitationControll
 router.patch("/invitations/:id/reject", authMiddleware, rejectInvitationController);
 
 router.get("/connections", authMiddleware, getConnectionsController);
+
+router.get("/search", authMiddleware, searchNetworkUsersController);
 
 export default router;

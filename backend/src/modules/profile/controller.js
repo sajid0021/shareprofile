@@ -24,7 +24,24 @@ const profileSchema = z.object({
 });
 
 const skillsSchema = z.object({
-  skills: z.array(z.string().trim().min(2).max(50)).max(50),
+  skills: z
+    .array(z.string().trim().min(2, "Skill must be at least 2 characters.").max(50, "Skill cannot exceed 50 characters."))
+    .max(50, "You can add up to 50 skills.")
+    .transform((values) => {
+      const seen = new Set();
+      return values.reduce((unique, value) => {
+        const normalized = value.trim();
+        const key = normalized.toLowerCase();
+
+        if (!normalized || seen.has(key)) {
+          return unique;
+        }
+
+        seen.add(key);
+        unique.push(normalized);
+        return unique;
+      }, []);
+    }),
 });
 
 const profileImageSchema = z.object({
@@ -83,6 +100,15 @@ export async function saveMySkillsController(req, res) {
     const profile = await saveProfileSkillsForUser(req.user.id, skills);
     return res.status(200).json({ success: true, message: "Skills saved.", profile });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed.",
+        code: "VALIDATION_ERROR",
+        errors: error.flatten(),
+      });
+    }
+
     return sendError(res, error, "Unable to save skills.");
   }
 }

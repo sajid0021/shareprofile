@@ -9,8 +9,16 @@ export function toNetworkUser(user, profile) {
     firstName: user.firstName,
     lastName: user.lastName,
     headline: profile?.headline || "",
+    about: profile?.about || "",
     profileImage: profile?.profileImage || "",
     location: [profile?.city, profile?.state, profile?.country].filter(Boolean).join(", "),
+    city: profile?.city || "",
+    state: profile?.state || "",
+    country: profile?.country || "",
+    email: profile?.email || user.email || "",
+    phone: profile?.phone || "",
+    website: profile?.website || "",
+    skills: profile?.skills || [],
   };
 }
 

@@ -5,6 +5,7 @@ import {
   acceptInvitation,
   rejectInvitation,
   getConnections,
+  searchNetworkUsers,
 } from "./network.service.js";
 
 export async function sendInvitationController(req, res) {
@@ -112,6 +113,22 @@ export async function getConnectionsController(req, res) {
     return res.status(500).json({
       success: false,
       message: "Failed to load connections.",
+    });
+  }
+}
+
+export async function searchNetworkUsersController(req, res) {
+  try {
+    const users = await searchNetworkUsers(req.user.id, String(req.query.q || ""));
+
+    return res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to search users.",
     });
   }
 }

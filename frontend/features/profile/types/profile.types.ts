@@ -57,6 +57,8 @@ export interface Project {
   description: string;
   technologies: string[];
   url?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface Certification {

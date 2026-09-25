@@ -4,8 +4,16 @@ export interface NetworkUser {
   firstName: string;
   lastName: string;
   headline: string;
+  about?: string;
   profileImage?: string;
   location?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  skills?: string[];
 }
 
 export interface Connection {
@@ -27,4 +35,12 @@ export interface NetworkSummary {
   connectionCount: number;
   pendingInvitationCount: number;
   sentInvitationCount: number;
+}
+
+export interface DirectMessage {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  body: string;
+  createdAt: string;
 }

@@ -19,3 +19,33 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: white;
+  }
+
+  .print-hidden,
+  .resume-actions > button {
+    display: none !important;
+  }
+
+  .resume-document {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .resume-document section,
+  .resume-document section > div > div {
+    break-inside: avoid;
+  }
+}

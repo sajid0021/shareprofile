@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { AuthRouteGuard } from "@/features/auth/components/AuthRouteGuard/AuthRouteGuard";
 
 import "./globals.css";
@@ -17,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthRouteGuard>{children}</AuthRouteGuard>
+        <QueryProvider>
+          <AuthRouteGuard>{children}</AuthRouteGuard>
+        </QueryProvider>
       </body>
     </html>
   );
